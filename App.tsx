@@ -14,31 +14,19 @@ import HomePage from './screens/HomePage';
 import DetailPage from './screens/DetailPage';
 import MyProduct from './screens/MyProduct';
 import { IProduct } from './shared/IProduct';
+import { RootStackParamList } from './shared/RootStackParamList';
 
-type RootStackParamList = {
-  Home: {
-    addProduct:(newProduct: IProduct) => void;
-    myProducts: IProduct[]
-  };
-  Detail: { 
-    id: number;
-    addProduct:(newProduct: IProduct) => void
-  }; 
-  MyProduct: {
-    myProducts: IProduct[]
-  };
-};
-
+ 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   const [myProducts, setProducts] = useState<IProduct[]>([]);;
 
-  const addProduct = (newProduct: IProduct) => {
+  const addProduct = (newProduct: IProduct): void => {
     setProducts((prevProducts) => [...prevProducts, newProduct]);
   };
+  
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

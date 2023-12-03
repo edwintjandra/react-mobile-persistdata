@@ -9,7 +9,8 @@ interface IProductComponent {
   style?: StyleProp<TextStyle>;
   isGrid?:boolean;
   addProduct?:(newProduct: IProduct) => void
-}
+  ownProduct?:boolean
+ }
 
 interface CombinedProps extends IProduct, IProductComponent {}
 
@@ -19,7 +20,7 @@ const Product = (props:CombinedProps) => {
   return (
     <TouchableOpacity
       style={[styles.product, props.isGrid ? sharedStyle.productGridView : sharedStyle.flex]}
-      onPress={() => navigation.navigate('Detail',{ id: props.id, addProduct: props.addProduct })}
+      onPress={() => navigation.navigate('Detail',{ id: props.id, addProduct: props.addProduct,ownProduct:props.ownProduct })}
     >
       <View style={styles.productThumbnail} >
          <Image source={{ uri: props.image }} style={props.isGrid? sharedStyle.imageGridView: styles.productImage} />

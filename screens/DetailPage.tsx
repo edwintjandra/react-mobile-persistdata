@@ -5,19 +5,9 @@ import ArrowLeft from '../assets/ArrowLeft';
 import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { sharedStyle } from '../shared/SharedStyle'; 
 import { IProduct } from '../shared/IProduct'; 
+import { RootStackParamList } from '../shared/RootStackParamList';
+import Modal from '../components/Modal';
 
-
-type RootStackParamList = {
-  Home: {
-    addProduct:(newProduct: IProduct) => void;
-    myProducts: IProduct[]
-  };
-    Detail: { 
-        id: number;
-        addProduct:(newProduct: IProduct) => void
-      }; 
-    MyProduct:undefined;
-  };
 
 
 interface IDetailPage {
@@ -27,8 +17,12 @@ route: RouteProp<RootStackParamList, 'Detail'>;
  
 
 const DetailPage: React.FC<IDetailPage> = ({ route }) => {
-    const { id, addProduct } = route.params;
+    const { id, addProduct,ownProduct } = route.params;
     const [product, setProduct] = useState<IProduct>();
+    const [modal, setModal] = useState({
+      isVisible: false,
+      message: '',
+    });
     const navigation=useNavigation();
 
     const getProductById = async (productId:number) => {
@@ -50,20 +44,35 @@ const DetailPage: React.FC<IDetailPage> = ({ route }) => {
         getProductById(id);
       }, [id]);
 
+
+
       const handleBuyPress = () => {
         if (product) {
-            addProduct(product);
-            navigation.navigate('MyProduct'); 
-        } else {
-            console.log("product is not available");
-          }    
-       };
+          addProduct(product);
+           setModal({
+            isVisible: true,
+            message: 'product successfully purchased',
+          });
+        }
+      };
+
+      const closeModal = () => {
+        setModal({
+          isVisible: false,
+          message: '',
+        });
+      };    
     
 
     return (
     <>
         {product && (
-        <View style={sharedStyle.container}>
+
+        <ScrollView style={sharedStyle.container}>
+          {modal.isVisible && (
+            <Modal message={modal.message} onClose={closeModal} />
+          )}
+ 
         <View>
         <View style={sharedStyle.flex}>
             <ArrowLeft onPress={() => navigation.navigate('Home')} />
@@ -83,11 +92,11 @@ const DetailPage: React.FC<IDetailPage> = ({ route }) => {
             <Text style={sharedStyle.textStyle}>
                 {product.description}
             </Text>
-            <Button title={'buy'} onPress={handleBuyPress}></Button>
+            <Button title={ownProduct ? 'Sell' : 'Buy'} onPress={handleBuyPress} />
             </View>
         </View>
         </View>
-        </View>
+        </ScrollView>
         )}
 
     </>

@@ -5,21 +5,8 @@ import { RouteProp, useNavigation } from '@react-navigation/native';
 import { sharedStyle } from '../shared/SharedStyle'; 
 import Product from '../components/Product';
 import { IProduct } from '../shared/IProduct'; 
-
-type RootStackParamList = {
-    Home: {
-      addProduct:(newProduct: IProduct) => void;
-      myProducts: IProduct[]
-    };
-      Detail: { 
-          id: number;
-          addProduct:(newProduct: IProduct) => void
-        }; 
-    MyProduct: {
-        myProducts: IProduct[]
-        };
-    };
-  
+import { RootStackParamList } from '../shared/RootStackParamList';
+ 
   
   interface IMyProductPage {
   route: RouteProp<RootStackParamList, 'MyProduct'>;
@@ -29,24 +16,6 @@ type RootStackParamList = {
   const MyProduct: React.FC<IMyProductPage> = ({ route }) => {
     const navigation=useNavigation();
     const myProducts: IProduct[] = route.params.myProducts;
- 
-
-  const createNewProduct = () => {
-    const newProduct: IProduct = {
-      id:2,
-      image: '',
-      title: 'New Product asiapkan bayar',
-      price: 9.99,
-      description: 'Description of the new product',
-    };
-
-    // Call addProduct with the new product data
-   };
-
-  useEffect(() => {
-     createNewProduct();
-  }, []);
-
 
   return (
     <View style={sharedStyle.container}>     
@@ -56,11 +25,10 @@ type RootStackParamList = {
         </View>   
         
         <ScrollView>
-
         {myProducts && (
         <View style={sharedStyle.rowLayout}>
             {myProducts.map((product) => (
-                <Product  description={product.description} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
+                <Product ownProduct  description={product.description} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
             ))}
         </View>
         )}
