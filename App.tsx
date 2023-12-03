@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet } from 'react-native';
@@ -15,12 +8,20 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from './screens/HomePage';
+import DetailPage from './screens/DetailPage';
+import MyProduct from './screens/MyProduct';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+type RootStackParamList = {
+  Home: undefined;
+  Detail: { id: number;}; 
+  MyProduct:undefined;
+};
 
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 
 function App(): JSX.Element {
@@ -31,11 +32,21 @@ function App(): JSX.Element {
   };
 
   return (
-       <View style={styles.container}>
-         
-        <HomePage></HomePage>
-      </View>
-      
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomePage} options={{
+            headerShown:false
+          }} />
+          <Stack.Screen name="Detail" component={DetailPage} options={{
+            headerShown:false
+            } } />
+
+             <Stack.Screen name="MyProduct" component={MyProduct} options={{
+            headerShown:false
+            } } />
+        </Stack.Navigator>
+      </NavigationContainer>
+       
   );
 }
 

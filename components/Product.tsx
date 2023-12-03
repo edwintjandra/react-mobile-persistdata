@@ -1,7 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
-import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet, Image, StyleProp, TextStyle } from 'react-native';
+import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet, Image, StyleProp, TextStyle, TouchableOpacity } from 'react-native';
  
 interface IProduct {
+  id:number;
   image: string;
   title: string;
   price: number;
@@ -9,24 +11,23 @@ interface IProduct {
   isGrid?:boolean;
  }
 
+
 const Product = (props:IProduct) => {
+  const navigation=useNavigation();
+
   return (
-    // <View style={[styles.product,styles.flex]}> this is default without grid layout
-    //    <View style={[styles.product,styles.productGridView]}> this is with grid layout
-    <View style={[styles.product,props.isGrid? styles.productGridView: styles.flex]}>
-      <View style={styles.productThumbnail}>
-         {/* <Image source={{ uri: props.image }}  style={styles.productImage}/>  this is default without grid layout*/}
-         {/* <Image source={{ uri: props.image }} style={styles.imageGridView }/> this is with grid layout */}
-
+    <TouchableOpacity
+      style={[styles.product, props.isGrid ? styles.productGridView : styles.flex]}
+      onPress={() => navigation.navigate('Detail', { id: props.id })}
+    >
+      <View style={styles.productThumbnail} >
          <Image source={{ uri: props.image }} style={props.isGrid? styles.imageGridView: styles.productImage} />
-
-
       </View>
         <View>
-            <Text style={styles.sectionTitle}>{props.title}</Text>
-            <Text style={styles.textStyle}>{props.price}</Text>
+            <Text style={styles.sectionTitle}>{props.title} </Text>
+            <Text style={styles.textStyle}>{props.price} </Text>
         </View>
-    </View>
+    </TouchableOpacity>  
   )
 }
 
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
       },
 
-      //for grid layout refer to HomePage,and Product
+      //for grid layout refer to HomePage,and Product,DetailPage
       rowLayout:{
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         marginBottom: 8,
       },
-      //reusable style -> refer to HomePage,Product
+      //reusable style -> refer to HomePage,Product,DetailPage
       arrow: {
         paddingVertical: 8,
         paddingHorizontal: 16,
@@ -93,7 +94,12 @@ const styles = StyleSheet.create({
       },
       flex: {
         flexDirection: 'row',
-       }
+        alignItems:'center'
+
+       },
+       lead:{
+        fontWeight:'bold'
+      }
 
   });
 

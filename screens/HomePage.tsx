@@ -3,9 +3,13 @@ import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, Scr
 import Product from '../components/Product';
 import ArrowLeft from '../assets/ArrowLeft';
 import ArrowRight from '../assets/ArrowRight';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 //product interface;
 interface IProduct {
+  id:number;
   image:string;
   title: string;
   price: number;
@@ -13,6 +17,8 @@ interface IProduct {
  
 
 const Header = () => {
+  const navigation=useNavigation();
+
     return (
       <View style={[styles.header,styles.container]}>
         <TextInput
@@ -23,9 +29,10 @@ const Header = () => {
          />
 
         <View style={styles.flexContainer}>
-            <View >
-                <Text style={[styles.myProducts, styles.textStyle]}  >My Products <ArrowRight style={styles.arrow}></ArrowRight> </Text>
-            </View>
+            <TouchableOpacity style={[styles.myProducts,styles.flex]} onPress={() => navigation.navigate('MyProduct')}>
+                <Text style={styles.textStyle} >My Products</Text>
+                <ArrowRight style={styles.arrow}></ArrowRight> 
+            </TouchableOpacity>
             <View  style={styles.balance}>
                 <Text style={styles.textStyle}>500</Text>
                 <Text style={styles.textStyle}>My Coins</Text>
@@ -40,7 +47,6 @@ const ProductList= ()=>{
   const [productData, setProductData] =  useState<IProduct[]>([]);;
   const [isGridViewActive, setIsGridViewActive] = useState(false);
 
-
     const getData = async () => {
       try {
         const response = await fetch("https://fakestoreapi.com/products");
@@ -50,8 +56,7 @@ const ProductList= ()=>{
         }
     
         const productsResponse = await response.json();
-        console.log('Product Response:', productsResponse);
-        setProductData(productsResponse);
+          setProductData(productsResponse);
     
         return productsResponse;
       } catch (error) {
@@ -74,12 +79,13 @@ const ProductList= ()=>{
                 <Text style={styles.sectionTitle}>Available Products</Text>
                 <Button title="grid" onPress={toggleGridView}></Button>
             </View>
+           
             <ScrollView>
-                {productData && (
+                 {productData && (
                 //<View >
                 <View style={isGridViewActive && styles.rowLayout}>
                     {productData.map((product) => (
-                          <Product isGrid={isGridViewActive}  image={product.image} title={product.title} price={product.price}></Product>
+                          <Product isGrid={isGridViewActive} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
                     ))}
                 </View>
                )}
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
     },
     
     myProducts:{
-        padding: 14, //default padding in an element
+        padding: 10, //default padding in an element
         borderRadius: 8,
         backgroundColor:'white',
      },
@@ -127,7 +133,7 @@ const styles = StyleSheet.create({
         borderRadius:5
       },
 
-      //for grid layout refer to HomePage,Product
+      //for grid layout refer to HomePage,Product,DetailPage
       rowLayout:{
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -143,7 +149,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         marginBottom: 8,
       },
-      //reusable style -> refer to HomePage,Product
+      //reusable style -> refer to HomePage,Product,DetailPage
       arrow: {
         paddingVertical: 8,
         paddingHorizontal: 16,
@@ -165,6 +171,11 @@ const styles = StyleSheet.create({
       },
       flex: {
         flexDirection: 'row',
+        alignItems:'center'
+
+      },
+      lead:{
+        fontWeight:'bold'
       }
 
   });
