@@ -1,31 +1,32 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react'
 import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet, Image, StyleProp, TextStyle, TouchableOpacity } from 'react-native';
- 
-interface IProduct {
-  id:number;
-  image: string;
-  title: string;
-  price: number;
+import { sharedStyle } from '../shared/SharedStyle'; 
+import { IProduct } from '../shared/IProduct'; 
+
+
+interface IProductComponent {
   style?: StyleProp<TextStyle>;
   isGrid?:boolean;
- }
+  addProduct?:(newProduct: IProduct) => void
+}
 
+interface CombinedProps extends IProduct, IProductComponent {}
 
-const Product = (props:IProduct) => {
+const Product = (props:CombinedProps) => {
   const navigation=useNavigation();
 
   return (
     <TouchableOpacity
-      style={[styles.product, props.isGrid ? styles.productGridView : styles.flex]}
-      onPress={() => navigation.navigate('Detail', { id: props.id })}
+      style={[styles.product, props.isGrid ? sharedStyle.productGridView : sharedStyle.flex]}
+      onPress={() => navigation.navigate('Detail',{ id: props.id, addProduct: props.addProduct })}
     >
       <View style={styles.productThumbnail} >
-         <Image source={{ uri: props.image }} style={props.isGrid? styles.imageGridView: styles.productImage} />
+         <Image source={{ uri: props.image }} style={props.isGrid? sharedStyle.imageGridView: styles.productImage} />
       </View>
         <View>
-            <Text style={styles.sectionTitle}>{props.title} </Text>
-            <Text style={styles.textStyle}>{props.price} </Text>
+            <Text style={sharedStyle.sectionTitle}>{props.title} </Text>
+            <Text style={sharedStyle.textStyle}>{props.price} </Text>
         </View>
     </TouchableOpacity>  
   )
@@ -55,51 +56,6 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
         marginBottom: 8,
       },
-
-      //for grid layout refer to HomePage,and Product,DetailPage
-      rowLayout:{
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between'
-      },
-      productGridView:{
-        width:'50%',
-        marginBottom: 10, 
-      },
-      imageGridView: {
-        width: '100%',
-        height: 100,
-        resizeMode: 'cover',
-        marginBottom: 8,
-      },
-      //reusable style -> refer to HomePage,Product,DetailPage
-      arrow: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-      },
-      sectionTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-      },
-      textStyle:{
-        fontSize: 18, //main font size
-        fontWeight: '500' //main font weight
-      },
-      flexContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      },
-      container: {
-          padding:20,   //the main spacing padding
-      },
-      flex: {
-        flexDirection: 'row',
-        alignItems:'center'
-
-       },
-       lead:{
-        fontWeight:'bold'
-      }
 
   });
 

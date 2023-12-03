@@ -3,24 +3,41 @@ import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, Scr
 import Product from '../components/Product';
 import ArrowLeft from '../assets/ArrowLeft';
 import ArrowRight from '../assets/ArrowRight';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, RouteProp, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { sharedStyle } from '../shared/SharedStyle'; 
+import { IProduct } from '../shared/IProduct'; 
 
 
-//product interface;
-interface IProduct {
-  id:number;
-  image:string;
-  title: string;
-  price: number;
- }
+
+type RootStackParamList = {
+  Home: {
+    addProduct:(newProduct: IProduct) => void;
+    myProducts: IProduct[]
+  };
+    Detail: { 
+        id: number;
+        addProduct:(newProduct: IProduct) => void
+      }; 
+    MyProduct:undefined;
+  };
+
+
+interface IDetailPage {
+route: RouteProp<RootStackParamList, 'Home'>;
+}
  
 
-const Header = () => {
+const Header = (props: { myProducts: IProduct[]}) => {
   const navigation=useNavigation();
+  const myProducts=props.myProducts;
+
+  const handleNavigateToMyProduct = () => {
+    navigation.navigate('MyProduct', { myProducts });
+  };
 
     return (
-      <View style={[styles.header,styles.container]}>
+      <View style={[styles.header,sharedStyle.container]}>
         <TextInput
         style={styles.input}
         placeholder="Type here..."
@@ -28,14 +45,14 @@ const Header = () => {
         // value={inputText}
          />
 
-        <View style={styles.flexContainer}>
-            <TouchableOpacity style={[styles.myProducts,styles.flex]} onPress={() => navigation.navigate('MyProduct')}>
-                <Text style={styles.textStyle} >My Products</Text>
-                <ArrowRight style={styles.arrow}></ArrowRight> 
+        <View style={sharedStyle.flexContainer}>
+            <TouchableOpacity style={[styles.myProducts,sharedStyle.flex]} onPress={handleNavigateToMyProduct}>
+                <Text style={sharedStyle.textStyle} >My Products</Text>
+                <ArrowRight style={sharedStyle.arrow}></ArrowRight> 
             </TouchableOpacity>
             <View  style={styles.balance}>
-                <Text style={styles.textStyle}>500</Text>
-                <Text style={styles.textStyle}>My Coins</Text>
+                <Text style={sharedStyle.textStyle}>500</Text>
+                <Text style={sharedStyle.textStyle}>My Coins</Text>
             </View>
         </View>
 
@@ -43,7 +60,7 @@ const Header = () => {
     );
   };
 
-const ProductList= ()=>{
+const ProductList= (props: { addProduct: (newProduct:IProduct) => void }) => {
   const [productData, setProductData] =  useState<IProduct[]>([]);;
   const [isGridViewActive, setIsGridViewActive] = useState(false);
 
@@ -74,18 +91,18 @@ const ProductList= ()=>{
     })
     
     return (
-        <View style={styles.container}>
-            <View style={styles.flexContainer}>
-                <Text style={styles.sectionTitle}>Available Products</Text>
+        <View style={sharedStyle.container}>
+            <View style={sharedStyle.flexContainer}>
+                <Text style={sharedStyle.sectionTitle}>Available Products</Text>
                 <Button title="grid" onPress={toggleGridView}></Button>
             </View>
            
             <ScrollView>
                  {productData && (
                 //<View >
-                <View style={isGridViewActive && styles.rowLayout}>
+                <View style={isGridViewActive && sharedStyle.rowLayout}>
                     {productData.map((product) => (
-                          <Product isGrid={isGridViewActive} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
+                          <Product addProduct={props.addProduct} description={product.description} isGrid={isGridViewActive} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
                     ))}
                 </View>
                )}
@@ -95,13 +112,13 @@ const ProductList= ()=>{
     )
 }
 
-  
-
-const HomePage = () => {
+const HomePage : React.FC<IDetailPage> = ({ route }) => {
+  const { addProduct, myProducts } = route.params;
+//ini header harus dikasih myProducts cok
   return (
     <View>
-        <Header></Header>
-        <ProductList></ProductList>
+        <Header myProducts={myProducts}></Header> 
+        <ProductList addProduct={addProduct}></ProductList>
      </View>
   )
 }
@@ -132,52 +149,6 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         borderRadius:5
       },
-
-      //for grid layout refer to HomePage,Product,DetailPage
-      rowLayout:{
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between'
-      },
-      productGridView:{
-        width:'50%',
-        marginBottom: 10, 
-      },
-      imageGridView: {
-        width: '100%',
-        height: 100,
-        resizeMode: 'cover',
-        marginBottom: 8,
-      },
-      //reusable style -> refer to HomePage,Product,DetailPage
-      arrow: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-      },
-      sectionTitle: {
-        fontSize: 24,
-        fontWeight: '600',
-      },
-      textStyle:{
-        fontSize: 18, //main font size
-        fontWeight: '500' //main font weight
-      },
-      flexContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      },
-      container: {
-          padding:20,   //the main spacing padding
-      },
-      flex: {
-        flexDirection: 'row',
-        alignItems:'center'
-
-      },
-      lead:{
-        fontWeight:'bold'
-      }
-
   });
 
 export default HomePage
