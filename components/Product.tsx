@@ -3,24 +3,27 @@ import React from 'react'
 import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet, Image, StyleProp, TextStyle, TouchableOpacity } from 'react-native';
 import { sharedStyle } from '../shared/SharedStyle'; 
 import { IProduct } from '../shared/IProduct'; 
+import { coinState, productState } from '../shared/SharedState';
+import { IDefaultProps } from '../shared/IDefaultProps';
 
 
 interface IProductComponent {
   style?: StyleProp<TextStyle>;
   isGrid?:boolean;
-  addProduct?:(newProduct: IProduct) => void
-  ownProduct?:boolean
- }
+   ownProduct?:boolean
+   }
 
-interface CombinedProps extends IProduct, IProductComponent {}
+interface CombinedProps extends IProduct, IProductComponent,IDefaultProps {}
 
 const Product = (props:CombinedProps) => {
   const navigation=useNavigation();
+  const productState=props.productState;
+  const coinState=props.coinState
 
   return (
     <TouchableOpacity
       style={[styles.product, props.isGrid ? sharedStyle.productGridView : sharedStyle.flex]}
-      onPress={() => navigation.navigate('Detail',{ id: props.id, addProduct: props.addProduct,ownProduct:props.ownProduct })}
+      onPress={() => navigation.navigate('Detail',{ id: props.id,ownProduct:props.ownProduct })}
     >
       <View style={styles.productThumbnail} >
          <Image source={{ uri: props.image }} style={props.isGrid? sharedStyle.imageGridView: styles.productImage} />

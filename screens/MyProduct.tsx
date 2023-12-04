@@ -6,6 +6,7 @@ import { sharedStyle } from '../shared/SharedStyle';
 import Product from '../components/Product';
 import { IProduct } from '../shared/IProduct'; 
 import { RootStackParamList } from '../shared/RootStackParamList';
+import { coinState, productState } from '../shared/SharedState';
  
   
   interface IMyProductPage {
@@ -15,7 +16,10 @@ import { RootStackParamList } from '../shared/RootStackParamList';
   
   const MyProduct: React.FC<IMyProductPage> = ({ route }) => {
     const navigation=useNavigation();
-    const myProducts: IProduct[] = route.params.myProducts;
+    const {  productState, coinState } = route.params;
+    const { myProducts, addProduct } = productState;
+    const { myCoins, reduceCoins, addCoins } = coinState;
+
 
   return (
     <View style={sharedStyle.container}>     
@@ -28,7 +32,7 @@ import { RootStackParamList } from '../shared/RootStackParamList';
         {myProducts && (
         <View style={sharedStyle.rowLayout}>
             {myProducts.map((product) => (
-                <Product ownProduct  description={product.description} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
+                <Product productState={productState} coinState={coinState} ownProduct  description={product.description} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
             ))}
         </View>
         )}

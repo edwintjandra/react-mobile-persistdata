@@ -1,17 +1,20 @@
 import { IProduct } from "./IProduct";
+import { coinState, productState } from "./SharedState";
 
 
 export type RootStackParamList = {
-    Home: {
-      addProduct: (newProduct: IProduct) => void;
-      myProducts: IProduct[];
-    };
-    Detail: {
-      id: number;
-      addProduct: (newProduct: IProduct) => void;
-      ownProduct?:boolean
-     };
-    MyProduct: {
-      myProducts: IProduct[];
-    };
+  Home: {
+    productState: ReturnType<typeof productState>;
+    coinState: ReturnType<typeof coinState>;
+  };
+  Detail: {
+    id: number;
+    ownProduct?: boolean;
+    productState: ReturnType<typeof productState>;
+    coinState: ReturnType<typeof coinState>;
+  };
+  MyProduct: {
+    productState: ReturnType<typeof productState>;
+    coinState: ReturnType<typeof coinState>;
+  };
   };

@@ -7,6 +7,7 @@ import { sharedStyle } from '../shared/SharedStyle';
 import { IProduct } from '../shared/IProduct'; 
 import { RootStackParamList } from '../shared/RootStackParamList';
 import Modal from '../components/Modal';
+import { coinState, productState } from '../shared/SharedState';
 
 
 
@@ -17,7 +18,10 @@ route: RouteProp<RootStackParamList, 'Detail'>;
  
 
 const DetailPage: React.FC<IDetailPage> = ({ route }) => {
-    const { id, addProduct,ownProduct } = route.params;
+    const { id, ownProduct } = route.params;
+    const {  productState, coinState } = route.params;
+    const { myProducts, addProduct,removeProduct } = productState;
+    const { myCoins, reduceCoins, addCoins } = coinState;
     const [product, setProduct] = useState<IProduct>();
     const [modal, setModal] = useState({
       isVisible: false,
@@ -44,15 +48,30 @@ const DetailPage: React.FC<IDetailPage> = ({ route }) => {
         getProductById(id);
       }, [id]);
 
-
-
       const handleBuyPress = () => {
-        if (product) {
-          addProduct(product);
-           setModal({
+        if (product && !ownProduct ) {
+          if(myCoins > product.price){
+            addProduct(product);
+            reduceCoins(product.price);
+             setModal({
+              isVisible: true,
+              message: 'product successfully purchased',
+            });
+          }else {
+            setModal({
+              isVisible: true,
+              message: 'purchased failed, insufficient balance',
+            });
+          }
+         
+        }else if(product && ownProduct){
+          removeProduct(product.id);
+          addCoins(product.price);
+          setModal({
             isVisible: true,
-            message: 'product successfully purchased',
+            message: 'product successfully sold',
           });
+
         }
       };
 
@@ -92,7 +111,7 @@ const DetailPage: React.FC<IDetailPage> = ({ route }) => {
             <Text style={sharedStyle.textStyle}>
                 {product.description}
             </Text>
-            <Button title={ownProduct ? 'Sell' : 'Buy'} onPress={handleBuyPress} />
+                <Button title={ownProduct ? 'Sell' : 'Buy'} onPress={handleBuyPress} />
             </View>
         </View>
         </View>

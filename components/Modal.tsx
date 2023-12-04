@@ -13,7 +13,7 @@ const Modal = (props:IModalProps) => {
     <View style={styles.modal}>
       <View style={styles.modalContent}>
         <Text style={styles.successModal}>
-          Success
+          {/* Success */}
         </Text>
         <View>
           <Text style={sharedStyle.textStyle}>{props.message}</Text>

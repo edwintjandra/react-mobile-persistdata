@@ -10,6 +10,7 @@ import { IProduct } from '../shared/IProduct';
 import HomePageHeader from '../components/HomePageHeader';
 import { RootStackParamList } from '../shared/RootStackParamList';
 import ProductList from '../components/ProductList';
+import { coinState, productState } from '../shared/SharedState';
 
 
 
@@ -18,12 +19,12 @@ route: RouteProp<RootStackParamList, 'Home'>;
 }
 
 const HomePage : React.FC<IHomePage> = ({ route }) => {
-  const { addProduct, myProducts } = route.params;
-  console.log(myProducts.length);
-   return (
-    <View>
-         <HomePageHeader myProducts={myProducts}></HomePageHeader>  
-         <ProductList addProduct={addProduct}></ProductList>
+     const {  productState, coinState } = route.params;
+
+     return (
+     <View>
+         <HomePageHeader productState={productState} coinState={coinState}></HomePageHeader>  
+         <ProductList productState={productState} coinState={coinState}></ProductList>
      </View>
   )
 }

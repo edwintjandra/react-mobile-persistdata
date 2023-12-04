@@ -3,11 +3,19 @@ import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, Scr
 import { sharedStyle } from '../shared/SharedStyle';
 import { IProduct } from '../shared/IProduct';
 import Product from './Product';
+import { coinState, productState } from '../shared/SharedState';
+import { IDefaultProps } from '../shared/IDefaultProps';
 
+interface IProductList {
+  
+}
 
-const ProductList = (props: { addProduct: (newProduct:IProduct) => void; }) => {
-     const [productData, setProductData] =  useState<IProduct[]>([]);;
+const ProductList = (props: IDefaultProps) => {
+    const [productData, setProductData] =  useState<IProduct[]>([]);;
     const [isGridViewActive, setIsGridViewActive] = useState(false);
+    const productState=props.productState;
+    const coinState=props.coinState
+     
   
       const getData = async () => {
         try {
@@ -47,7 +55,7 @@ const ProductList = (props: { addProduct: (newProduct:IProduct) => void; }) => {
                 //<View >
                 <View style={isGridViewActive && sharedStyle.rowLayout}>
                     {productData.map((product) => (
-                        <Product addProduct={props.addProduct} description={product.description} isGrid={isGridViewActive} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
+                        <Product productState={productState} coinState={coinState} description={product.description} isGrid={isGridViewActive} id={product.id}  image={product.image} title={product.title} price={product.price}></Product>
                     ))}
                 </View>
                )}

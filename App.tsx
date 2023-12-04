@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type {PropsWithChildren} from 'react';
 import { View, Button, Alert, useColorScheme, Text, SafeAreaView, StatusBar, ScrollView, StyleSheet } from 'react-native';
 import {
@@ -15,18 +15,15 @@ import DetailPage from './screens/DetailPage';
 import MyProduct from './screens/MyProduct';
 import { IProduct } from './shared/IProduct';
 import { RootStackParamList } from './shared/RootStackParamList';
+import { coinState, productState } from './shared/SharedState';
 
  
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  const [myProducts, setProducts] = useState<IProduct[]>([]);;
-
-  const addProduct = (newProduct: IProduct): void => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
-  };
-  
+  const productStateInstance = productState();
+  const coinStateInstance = coinState();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -34,27 +31,33 @@ function App(): JSX.Element {
 
   return (
       <NavigationContainer>
-        <Stack.Navigator>
+      <Stack.Navigator>
         <Stack.Screen
           name="Home"
           component={HomePage}
           options={{
-            headerShown: false,
+            headerShown: false, 
           }}
-          initialParams={{ addProduct, myProducts }}
-          />
-
-          <Stack.Screen name="Detail" component={DetailPage} options={{
-            headerShown:false
-            } } />
-
-             <Stack.Screen name="MyProduct" component={MyProduct} options={{
-            headerShown:false
-            } } 
-            initialParams={{myProducts }}
-            />
-        </Stack.Navigator>
-      </NavigationContainer>
+          initialParams={{ productState: productStateInstance, coinState: coinStateInstance }}
+        />
+        <Stack.Screen
+          name="Detail"
+          component={DetailPage}
+          options={{
+            headerShown: false, 
+          }}
+          initialParams={{ productState: productStateInstance, coinState: coinStateInstance }}
+        />
+        <Stack.Screen
+          name="MyProduct"
+          component={MyProduct}
+          options={{
+            headerShown: false, 
+          }}
+          initialParams={{ productState: productStateInstance, coinState: coinStateInstance }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
        
   );
 }
